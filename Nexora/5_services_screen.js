@@ -1,8 +1,8 @@
 // Nexora/5_services_screen.js — clean services list
-import { useState, Text, View } from "./2_dependencies";
-import { useApp } from "./3_core_index";
-import { Screen, Card, H1, H2, P, Input, Button, Row, Divider, EmptyState, Spacer } from "./4_ui_components";
-import UIHeader from "./4_ui_header";
+import { useState, Text, View } from "./2_dependencies.js";
+import { useApp } from "./3_core_index.js";
+import { Screen, Card, H1, H2, P, Input, Button, Row, Divider, EmptyState, Spacer } from "./4_ui_components.js";
+import UIHeader from "./4_ui_header.js";
 
 export default function ServicesScreen() {
   const { services, addService, removeService } = useApp();

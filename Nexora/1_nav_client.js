@@ -1,7 +1,7 @@
 // Nexora/1_nav_client.js — bottom tabs for client role (safe)
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useTheme } from "./4_ui_theme";
+import { useTheme } from "./4_ui_theme.js";
 
 import {
   IconDashboard as IconExplore,
@@ -9,9 +9,9 @@ import {
   IconSettings
 } from "./4_ui_icons";
 
-import ExploreBusinessesScreen from "./5_explore_businesses";
-import MyBookingsScreen from "./5_my_bookings_screen";
-import SettingsScreen from "./5_settings_screen";
+import ExploreBusinessesScreen from "./5_explore_businesses.js";
+import MyBookingsScreen from "./5_my_bookings_screen.js";
+import SettingsScreen from "./5_settings_screen.js";
 
 const Tab = createBottomTabNavigator();
 

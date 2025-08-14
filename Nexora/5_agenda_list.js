@@ -1,7 +1,7 @@
 // Nexora/5_agenda_list.js — agenda with day/filters
-import { React, useState, View, Text } from "./2_dependencies"; // <-- añade Text
-import { useApp } from "./3_core_index";
-import { Screen, Card, H1, H2, P, Row, Button, Input, Divider, Spacer } from "./4_ui_components";
+import { React, useState, View, Text } from "./2_dependencies.js"; // <-- añade Text
+import { useApp } from "./3_core_index.js";
+import { Screen, Card, H1, H2, P, Row, Button, Input, Divider, Spacer } from "./4_ui_components.js";
 
 const fmtDate = (d) => new Date(d).toLocaleDateString([], { weekday: "short", day: "2-digit", month: "short" });
 const fmtTime = (d) => new Date(d).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -118,7 +118,7 @@ export default function AgendaList({ navigation }) {
         );
       })}
 
-      <Button title="New booking" onPress={() => navigation.navigate("booking_create")} />
+      <Button title="New bookinaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag" onPress={() => navigation.navigate("booking_create")} />
     </Screen>
   );
 }

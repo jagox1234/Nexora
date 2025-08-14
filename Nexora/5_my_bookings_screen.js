@@ -1,8 +1,8 @@
 // Nexora/5_my_bookings_screen.js — client: my requests (queue & requested) with toasts
-import { View, Text, Alert } from "./2_dependencies";
-import { useApp } from "./3_core_index";
-import { useToast } from "./4_ui_toast";
-import { Screen, Card, H1, H2, P, Row, Button, Divider } from "./4_ui_components";
+import { View, Text, Alert } from "./2_dependencies.js";
+import { useApp } from "./3_core_index.js";
+import { useToast } from "./4_ui_toast.js";
+import { Screen, Card, H1, H2, P, Row, Button, Divider } from "./4_ui_components.js";
 
 export default function MyBookingsScreen() {
   const { clientRequests, removeClientRequest } = useApp();

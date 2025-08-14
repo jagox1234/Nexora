@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "./2_dependencies";
-import { useTheme } from "./4_ui_theme";
+import { useTheme } from "./4_ui_theme.js";
 
 /* ========= helpers ========= */
 const useColors = () => {

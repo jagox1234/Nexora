@@ -1,7 +1,7 @@
 // Nexora/5_booking_create.js — create booking with overlap validation
-import { React, useState, View, Alert } from "./2_dependencies";
-import { useApp } from "./3_core_index";
-import { Screen, Card, H1, H2, P, Row, Button, Input, Spacer } from "./4_ui_components";
+import { React, useState, View, Alert } from "./2_dependencies.js";
+import { useApp } from "./3_core_index.js";
+import { Screen, Card, H1, H2, P, Row, Button, Input, Spacer } from "./4_ui_components.js";
 
 const fmtTime = (iso)=> new Date(iso).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
 

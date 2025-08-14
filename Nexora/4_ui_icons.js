@@ -1,6 +1,6 @@
 // Nexora/4_ui_icons.js — safe minimal SVG icons for tabs
 import React from "react";
-import { Svg, Path, Circle, Rect } from "./2_dependencies";
+import { Svg, Path, Circle, Rect } from "./2_dependencies.js";
 
 function withTabIcon(Component) {
   return ({ color, size, focused }) => (

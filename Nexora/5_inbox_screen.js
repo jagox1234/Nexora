@@ -1,8 +1,8 @@
 // Nexora/5_inbox_screen.js — unified inbox for Client & Business (with toasts)
-import { React, View, Text, Alert } from "./2_dependencies";
-import { useApp } from "./3_core_index";
-import { useToast } from "./4_ui_toast";
-import { Screen, Card, H1, H2, P, Row, Button, Spacer, Divider } from "./4_ui_components";
+import { React, View, Text, Alert } from "./2_dependencies.js";
+import { useApp } from "./3_core_index.js";
+import { useToast } from "./4_ui_toast.js";
+import { Screen, Card, H1, H2, P, Row, Button, Spacer, Divider } from "./4_ui_components.js";
 
 const fmt = (iso) => new Date(iso).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 

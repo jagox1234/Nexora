@@ -1,10 +1,10 @@
 // Nexora/5_dashboard_screen.js — full dashboard with KPIs, quick actions, upcoming, toasts & modal
-import { React, Alert } from "./2_dependencies";
-import { Screen, Card, H1, H2, P, Row, Button, Spacer, Divider } from "./4_ui_components";
-import { useTheme } from "./4_ui_theme";
-import { useToast } from "./4_ui_toast";
-import { useModal } from "./4_ui_modal";
-import { useApp } from "./3_core_index";
+import { React, Alert } from "./2_dependencies.js";
+import { Screen, Card, H1, H2, P, Row, Button, Spacer, Divider } from "./4_ui_components.js";
+import { useTheme } from "./4_ui_theme.js";
+import { useToast } from "./4_ui_toast.js";
+import { useModal } from "./4_ui_modal.js";
+import { useApp } from "./3_core_index.js";
 
 export default function DashboardScreen({ navigation }) {
   const t = useTheme();
@@ -49,7 +49,7 @@ export default function DashboardScreen({ navigation }) {
 
   // ---- Navigation helper ----
   const go = (name) => {
-    try { navigation?.navigate?.(name); } catch {}
+  try { navigation?.navigate?.(name); } catch { /* ignore navigation error */ }
   };
 
   // ---- Quick actions (safe, demo) ----

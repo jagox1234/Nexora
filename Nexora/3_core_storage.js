@@ -1,5 +1,5 @@
 // Nexora/3_core_storage.js — local persistence helpers
-import { AsyncStorage } from "./2_dependencies";
+import { AsyncStorage } from "./2_dependencies.js";
 
 export const saveJSON = async (key, value) => {
   try {

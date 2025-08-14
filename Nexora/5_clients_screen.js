@@ -1,7 +1,7 @@
 // Nexora/5_clients_screen.js — clients CRUD (offline)
-import { React, useState, View } from "./2_dependencies";
-import { useApp } from "./3_core_index";
-import { Screen, Card, H1, H2, P, Row, Button, Input, Divider, Spacer } from "./4_ui_components";
+import { React, useState, View } from "./2_dependencies.js";
+import { useApp } from "./3_core_index.js";
+import { Screen, Card, H1, H2, P, Row, Button, Input, Divider, Spacer } from "./4_ui_components.js";
 
 export default function ClientsScreen() {
   const { clients, addClient, removeClient, bookings } = useApp();

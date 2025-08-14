@@ -1,11 +1,11 @@
 // Nexora/5_explore_businesses.js — client explore with waitlist, time picker, badges & toasts
-import { React, useState, View, Text, Alert } from "./2_dependencies";
-import { Screen, Card, H1, H2, P, Row, Button, Input, Spacer, Divider } from "./4_ui_components";
-import { useTheme } from "./4_ui_theme";
-import { useToast } from "./4_ui_toast";
-import { useModal } from "./4_ui_modal";
-import { useApp } from "./3_core_index";
-import DateTimePickerModal from "./4_ui_datetime_picker";
+import { React, useState, View, Text, Alert } from "./2_dependencies.js";
+import { Screen, Card, H1, H2, P, Row, Button, Input, Spacer, Divider } from "./4_ui_components.js";
+import { useTheme } from "./4_ui_theme.js";
+import { useToast } from "./4_ui_toast.js";
+import { useModal } from "./4_ui_modal.js";
+import { useApp } from "./3_core_index.js";
+import DateTimePickerModal from "./4_ui_datetime_picker.js";
 
 export default function ExploreBusinessesScreen() {
   const t = useTheme();

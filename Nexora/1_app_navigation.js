@@ -2,12 +2,12 @@
 import React from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 
-import { useApp } from "./3_core_index";
-import { useTheme } from "./4_ui_theme";
+import { useApp } from "./3_core_index.js";
+import { useTheme } from "./4_ui_theme.js";
 
-import BusinessTabs from "./1_nav_business";
-import ClientTabs from "./1_nav_client";
-import RoleSelectScreen from "./5_role_select_screen";
+import BusinessTabs from "./1_nav_business.js";
+import ClientTabs from "./1_nav_client.js";
+import RoleSelectScreen from "./5_role_select_screen.js";
 
 export default function AppNavigation() {
   const { role } = useApp();

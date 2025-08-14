@@ -1,8 +1,8 @@
 // Nexora/5_settings_screen.js — settings + role switch + theme toggle
-import { React, View, Alert } from "./2_dependencies";
-import { useApp } from "./3_core_index";
-import { useTheme } from "./4_ui_theme";
-import { Screen, Card, H1, H2, P, Row, Button, Input, Spacer } from "./4_ui_components";
+import { React, View, Alert } from "./2_dependencies.js";
+import { useApp } from "./3_core_index.js";
+import { useTheme } from "./4_ui_theme.js";
+import { Screen, Card, H1, H2, P, Row, Button, Input, Spacer } from "./4_ui_components.js";
 
 export default function SettingsScreen() {
   const { role, pickRole, clearRole, clinic, setClinic } = useApp();

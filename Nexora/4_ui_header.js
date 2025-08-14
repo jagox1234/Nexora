@@ -1,6 +1,6 @@
 // Nexora/4_ui_header.js — app header with safe theme fallbacks
-import { React, View, Text, TouchableOpacity } from "./2_dependencies";
-import { useTheme } from "./4_ui_theme";
+import { React, View, Text, TouchableOpacity } from "./2_dependencies.js";
+import { useTheme } from "./4_ui_theme.js";
 
 /**
  * Props:

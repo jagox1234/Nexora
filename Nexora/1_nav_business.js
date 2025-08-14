@@ -2,7 +2,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useTheme } from "./4_ui_theme";
+import { useTheme } from "./4_ui_theme.js";
 
 import {
   IconDashboard,
@@ -13,13 +13,13 @@ import {
   IconClients
 } from "./4_ui_icons";
 
-import DashboardScreen from "./5_dashboard_screen";
-import ServicesScreen from "./5_services_screen";
-import InboxScreen from "./5_inbox_screen";
-import SettingsScreen from "./5_settings_screen";
-import AgendaList from "./5_agenda_list";
-import BookingCreate from "./5_booking_create";
-import ClientsScreen from "./5_clients_screen";
+import DashboardScreen from "./5_dashboard_screen.js";
+import ServicesScreen from "./5_services_screen.js";
+import InboxScreen from "./5_inbox_screen.js";
+import SettingsScreen from "./5_settings_screen.js";
+import AgendaList from "./5_agenda_list.js";
+import BookingCreate from "./5_booking_create.js";
+import ClientsScreen from "./5_clients_screen.js";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

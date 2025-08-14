@@ -1,8 +1,8 @@
 // Nexora/5_role_select_screen.js — pick role (client or business)
-import { React, View } from "./2_dependencies";
-import { useApp } from "./3_core_index";
-import { useTheme } from "./4_ui_theme";
-import { Screen, Card, H1, H2, P, Row, Button, Spacer } from "./4_ui_components";
+import { React, View } from "./2_dependencies.js";
+import { useApp } from "./3_core_index.js";
+import { useTheme } from "./4_ui_theme.js";
+import { Screen, Card, H1, H2, P, Row, Button, Spacer } from "./4_ui_components.js";
 
 export default function RoleSelectScreen() {
   const { pickRole } = useApp();

@@ -8,7 +8,7 @@ import {
   useState,
   useCallback,
 } from "./2_dependencies";
-import { AsyncStorage } from "./2_dependencies";
+import { AsyncStorage } from "./2_dependencies.js";
 
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);

@@ -1,5 +1,5 @@
 // Nexora/4_ui_theme.js — theme provider and hook
-import { React, createContext, useContext, useState, useMemo } from "./2_dependencies";
+import { React, createContext, useContext, useState, useMemo } from "./2_dependencies.js";
 
 const ThemeContext = createContext();
 

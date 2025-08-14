@@ -1,6 +1,6 @@
 // Nexora/4_ui_modal.js — simple modal system (confirm / alert) with safe theme usage
-import { React, useState, createContext, useContext, View, Text, Modal, Pressable } from "./2_dependencies";
-import { useTheme } from "./4_ui_theme";
+import { React, useState, createContext, useContext, View, Text, Modal, Pressable } from "./2_dependencies.js";
+import { useTheme } from "./4_ui_theme.js";
 
 const ModalCtx = createContext(null);
 export const useModal = () => useContext(ModalCtx);

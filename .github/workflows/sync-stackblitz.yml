@@ -1,0 +1,19 @@
+# Workflow para automatizar la actualización de StackBlitz desde GitHub
+# Este archivo ejecuta la acción en cada push a main
+name: Sync to StackBlitz
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-stackblitz:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      # Aquí puedes agregar pasos personalizados si StackBlitz publica una API para sincronización directa
+      # Actualmente StackBlitz se sincroniza automáticamente con GitHub si el proyecto está vinculado
+      - name: Aviso de sincronización
+        run: echo "StackBlitz se actualizará automáticamente con los cambios en main."
