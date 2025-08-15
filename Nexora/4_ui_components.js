@@ -6,7 +6,6 @@ import {
   ScrollView,
   TextInput as RNTextInput,
   TouchableOpacity,
-  StyleSheet,
 } from "./2_dependencies";
 import { useTheme } from "./4_ui_theme.js";
 
@@ -102,7 +101,6 @@ export function P({ children, muted = false, style }) {
 }
 
 export function Row({ children, gap = 1, align = "stretch", justify = "flex-start", style }) {
-  const s = useSpacing();
   const gapPx = typeof gap === "number" ? gap * 8 : 8;
   return (
     <View style={[{ flexDirection: "row", alignItems: align, justifyContent: justify }, style]}>
@@ -114,7 +112,6 @@ export function Row({ children, gap = 1, align = "stretch", justify = "flex-star
 }
 
 export function Spacer({ h = 1 }) {
-  const s = useSpacing();
   const base = 8;
   return <View style={{ height: h * base }} />;
 }
@@ -159,7 +156,6 @@ export function Button({
   disabled = false,
 }) {
   const c = useColors();
-  const s = useSpacing();
 
   const padV = size === "sm" ? 8 : 12;
   const padH = size === "sm" ? 10 : 12;

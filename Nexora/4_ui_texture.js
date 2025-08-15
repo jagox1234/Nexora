@@ -1,4 +1,6 @@
 // Nexora/4_ui_texture.js — layered textured backgrounds with gradients
+import React from 'react';
+
 import { View } from "./2_dependencies.js";
 import { LinearGradient } from "./2_dependencies.js";
 import { useTheme } from "./4_ui_theme.js";

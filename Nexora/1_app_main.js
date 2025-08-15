@@ -1,12 +1,10 @@
 // Nexora/1_app_main.js — app root with providers + error boundary
-import ErrorBoundary from "./0_error_boundary.js";
-import { AppProvider } from "./3_core_index.js";
-import AppNavigation from "./1_app_navigation.js";
-import { ToastProvider } from "./4_ui_toast.js";
-import { ModalProvider } from "./4_ui_modal.js";
-import { ThemeProvider } from "./4_ui_theme.js";
+import ErrorBoundary from "@app/0_error_boundary.js";
+import AppNavigation from "@v2/app/navigation/AppNavigation.js";
+import { ThemeProvider, ToastProvider, ModalProvider, AppProvider } from "@v2/providers/index.js";
+import React from 'react';
 
-export default function App() {
+export default function AppRoot() {
   return (
     <ThemeProvider>
       <AppProvider>

@@ -12,28 +12,82 @@ Nexora gestiona agenda de servicios, clientes y reservas para negocios y modo cl
 - Inbox para convertir solicitudes en reservas.
 - Explorar negocios (demo/mock) y unirse a lista de espera o solicitar hora.
 - Theme claro/oscuro persistente.
+- GPS avanzado: permiso bajo demanda, posición actual, modo watch, reverse geocode cache con TTL, staleness (5m), reintentos con backoff, métricas de errores.
+- Geocerca configurable: definir centro (posición actual) y radio, distancia en tiempo real, estado dentro/fuera, persistencia local.
 - i18n (en / es) con persistencia de locale (`nx_locale`).
 - Sistema propio: toasts, modales, picker de fecha/hora.
 - Tests de lógica y migraciones con Jest.
 - CI (GitHub Actions) ejecuta lint + tests en cada push/PR.
 
-### 🗂 Arquitectura / Estructura
+### 🗂 Arquitectura / Estructura (v2)
 ```
-App.js                     # Punto de entrada Expo
-Nexora/
-	0_error_boundary.js      # Contención global de errores
-	1_app_main.js            # Montaje de providers + root navigation
-	1_app_navigation.js      # Navegación stack principal
-	BusinessTabs.js / ClientTabs.js # Bottom tabs por rol
-	2_dependencies.js        # Facade de imports (React, RN, libs)
-	3_core_index.js          # Store / dominio (services, clients, bookings)
-	3_core_storage.js        # Persistencia + migraciones (SCHEMA_VERSION)
-	3_core_helpers.js        # Utilidades dominio
-	4_ui_*                   # Componentes UI, theme, modal, toast
-	screens/                 # Pantallas (DashboardScreen, BookingCreate, AgendaList...)
-	legacy/                  # Notas sobre stubs numéricos antiguos (en proceso de retirada)
-__tests__/                 # Pruebas de lógica / migración
+App.js
+Nexora/                    # Legacy (quedan sólo shims DEPRECATED hasta eliminación completa)
+	1_app_main.js            # Monta providers usando @v2
+	2_dependencies.js        # Dependencias comunes
+	screens/                 # Aún presentes pero apuntan a v2 (transición)
+Nexora v2/
+	app/
+		navigation/            # AppNavigation + tabs (BusinessTabs / ClientTabs)
+		AppProvider.js         # Providers composition
+	core/                    # Estado, dominio, persistencia, i18n, helpers puros
+	ui/                      # Componentes UI, theme, modal, toast, header, icons
+	screens/                 # Pantallas reales (Dashboard, Services, Agenda, etc.)
+	index.js                 # Barrel público (@v2/*)
+__tests__/                 # Pruebas Jest
 ```
+
+> Nota: Alias actualizados para que `@screens/*` y `@nav/*` apunten a `Nexora v2`. Los archivos numéricos `5_*` quedan como stubs y se eliminarán en una limpieza final.
+
+#### Diagrama (vista alta)
+
+```mermaid
+flowchart TB
+	subgraph UI[UI Layer]
+		Components[UI Components\n(Button, Card, Select, Modal, Toast)]
+	end
+
+	subgraph Screens
+		Dashboard[Dashboard]
+		Services[Services]
+		Agenda[Agenda]
+		Clients[Clients]
+		Bookings[Bookings]
+		Inbox[Inbox]
+	end
+
+	subgraph Providers
+		Theme[ThemeProvider]
+		AppProv[AppProvider\n(state + actions)]
+		ModalP[ModalProvider]
+		ToastP[ToastProvider]
+		ErrorB[ErrorBoundary]
+	end
+
+	subgraph Core[Core Domain]
+		ServicesCore[services.js]
+		ClientsCore[clients.js]
+		BookingsCore[bookings.js]
+		Persistence[persistence.js\n(migrations)]
+		I18n[i18n.js]
+		Helpers[helpers.js / logic.js]
+	end
+
+	Async[(AsyncStorage)]
+	Future[(Backend Sync / Queue)]]
+
+	AppJS[App.js] --> Providers --> Navigation[Navigation (Stacks/Tabs)] --> Screens
+	Screens --> UI
+	Screens --> Core
+	Providers --> Core
+	Core --> Persistence --> Async
+	Core --> I18n
+	Core --> Helpers
+	AppProv -. planned .-> Future
+	Persistence -. planned .-> Future
+```
+
+Más detalle en `docs/architecture.md`.
 
 ### 🧱 Capas
 - Core (estado + reglas): mutaciones puras, genera slots, valida solapes, migra datos.
@@ -85,14 +139,17 @@ Borrar app / limpiar caché de Expo para reset.
 2. Registrar en navegación (tabs o stack) en `1_app_navigation.js` o tabs correspondientes.
 3. Usar `useApp()` para estado / acciones y `t()` para textos.
 
-### 📌 Roadmap (Prioritario Próximo)
-*(Punto 11 completado: documentación de arquitectura · Punto 12 completado: pre-commit hooks)*
-1. (Hecho) Eliminados restos numéricos (`5_*.js`).
-2. Tests adicionales: inactivar servicio, cancelación, validaciones fallidas.
-3. (Hecho) Documentar arquitectura (este README) y diagrama rápido (pendiente diagrama visual opcional).
-4. Endurecer TypeScript (modo strict) y ajustar ESLint a TS >=5.
-5. (Hecho) Pre-commit hooks (husky + lint-staged).
-6. Manejo centralizado de errores y logger.
+### 📌 Roadmap (Actualizado)
+1. Notificación UI al cruzar geocerca (toast/banner).
+2. Multi-geocerca (sedes múltiples) + selección activa.
+3. Limpieza final: eliminar shims `5_*.js` y antiguos archivos legacy (commit separado).
+4. Tests adicionales: inactivar servicio, cancelación avanzada, validaciones fallidas, slots límites (horarios partidos / DST edge cases extra).
+5. Endurecer TypeScript (strict true + noImplicitOverride + exactOptionalPropertyTypes).
+6. Logger central + reporting de errores + envío opcional.
+7. Soporte backend sync (plan de colas offline).
+8. Métricas de rendimiento (marcas inicial/primer render, persist load).
+9. Accesibilidad básica (roles web, tamaños táctiles, contraste dark mode).
+10. CHANGELOG semántico y versionado.
 
 ### 🪝 Pre-commit Hooks
 Integrados con Husky + lint-staged para asegurar calidad antes de cada commit.
@@ -113,7 +170,35 @@ Si un paso falla, el commit se bloquea. Para omitir (no recomendado) usar `git c
 - Multi-moneda y husos horarios robustos
 - Export / backup de datos
 
+Ver `docs/backend-sync.md` para diseño preliminar de sincronización.
+
 ### 📄 Licencia
 Privado / Uso interno.
+
+---
+### 📝 Nota de Migración (Agosto 2025)
+Se completó la migración a la estructura `Nexora v2/`:
+- Providers, navegación, UI, core e i18n viven ahora exclusivamente bajo `Nexora v2/`.
+- `@app` alias apunta a `Nexora v2` (ya no se necesita la carpeta legacy).
+- Se eliminó el antiguo `1_app_main.js` y se integró el `ErrorBoundary` como `Nexora v2/app/ErrorBoundary.js`.
+- Dependencias centralizadas en `Nexora v2/app/baseDependencies.js` (antes `Nexora/2_dependencies.js`).
+- Carpetas duplicadas/legacy (`Nexora/`, `NexoraV2/` provisional) marcadas para borrado definitivo tras verificar que no hay imports activos.
+
+Pasos tras clonar (post-migración):
+1. `npm install`
+2. `npm run lint && npm test`
+3. `npx expo start --web` (o `--tunnel` si hay problemas de red)
+
+Si aparece algún import roto, buscar referencias antiguas a rutas `Nexora/` y reemplazar por alias `@v2/*` o `@core`, `@ui`, etc.
+
+Esta nota puede eliminarse en el futuro una vez consolidado el historial de commits.
+
+### ♿ Accesibilidad (progreso)
+- Componentes interactivos mínimo 44px alto (revisar Buttons/Input ya alineados)
+- Texto contrastado en dark mode (pendiente auditoría automática)
+- Futuro: soporte para lectores de pantalla (añadir `accessibilityLabel`) y navegación por teclado en web.
+
+### 🧾 CHANGELOG
+Ver `CHANGELOG.md` para historial de cambios versionados.
 
 

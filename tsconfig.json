@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "strict": true,
+  "noImplicitOverride": true,
+  "noUncheckedIndexedAccess": true,
+  "exactOptionalPropertyTypes": true,
+  "forceConsistentCasingInFileNames": true,
+  "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "types": [
+      "react",
+      "react-native"
+    ],
+    "baseUrl": ".",
+    "paths": {
+    "@core/*": ["Nexora v2/core/*"],
+    "@ui/*": ["Nexora v2/ui/*"],
+  "@screens/*": ["Nexora v2/screens/*"],
+  "@nav/*": ["Nexora v2/app/navigation/*"],
+    "@providers/*": ["Nexora v2/providers/*"],
+  "@app/*": ["Nexora v2/*"],
+  "@v2/*": ["Nexora v2/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "webapp/node_modules"
+  ],
+  "extends": "expo/tsconfig.base"
+}

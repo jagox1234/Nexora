@@ -1,11 +1,14 @@
 // Nexora/4_ui_icons.js — safe minimal SVG icons for tabs
 import React from "react";
+
 import { Svg, Path, Circle, Rect } from "./2_dependencies.js";
 
 function withTabIcon(Component) {
-  return ({ color, size, focused }) => (
+  const Wrapped = ({ color, size, focused }) => (
     <Component color={color || (focused ? "#7dd3fc" : "#93a3af")} size={size || 22} focused={focused} />
   );
+  Wrapped.displayName = `WithTabIcon(${Component.name || 'Icon'})`;
+  return Wrapped;
 }
 
 function _IconDashboard({ color = "#93a3af", size = 22 }) {

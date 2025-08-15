@@ -1,13 +1,12 @@
 // Nexora/1_app_navigation.js — role switch + navigation container
-import React from "react";
+import { useApp } from "@core/index.js";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
-
-import { useApp } from "./3_core_index.js";
-import { useTheme } from "./4_ui_theme.js";
-
-import BusinessTabs from "./1_nav_business.js";
-import ClientTabs from "./1_nav_client.js";
-import RoleSelectScreen from "./5_role_select_screen.js";
+import { useTheme } from "@ui/index.js";
+import React from "react";
+import { Suspense } from 'react';
+const BusinessTabs = React.lazy(() => import('@app/BusinessTabs.js'));
+const ClientTabs = React.lazy(() => import('@app/ClientTabs.js'));
+import { RoleSelectScreen } from "@screens/index.js";
 
 export default function AppNavigation() {
   const { role } = useApp();
@@ -28,7 +27,9 @@ export default function AppNavigation() {
 
   return (
     <NavigationContainer theme={navTheme}>
-      {role === "business" ? <BusinessTabs /> : role === "client" ? <ClientTabs /> : <RoleSelectScreen />}
+      <Suspense fallback={null}>
+        {role === "business" ? <BusinessTabs /> : role === "client" ? <ClientTabs /> : <RoleSelectScreen />}
+      </Suspense>
     </NavigationContainer>
   );
 }

@@ -1,6 +1,6 @@
 // Nexora/0_error_boundary.js — catch and print runtime render errors
 import React from "react";
-import { View, Text, ScrollView } from "react-native";
+import { Text, ScrollView } from "react-native";
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {

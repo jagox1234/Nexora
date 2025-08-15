@@ -1,5 +1,6 @@
 // Nexora/4_ui_theme.js — theme provider and hook
-import { React, createContext, useContext, useState, useMemo } from "./2_dependencies.js";
+import { React, createContext, useContext, useState, useMemo, useEffect } from "./2_dependencies.js";
+import { AsyncStorage } from "./2_dependencies.js";
 
 const ThemeContext = createContext();
 
@@ -41,9 +42,21 @@ const darkColors = {
 
 export function ThemeProvider({ children }) {
   const [mode, setMode] = useState("light");
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try { const saved = await AsyncStorage.getItem('nx_theme_mode'); if(saved === 'light' || saved === 'dark') setMode(saved); } catch {}
+      setReady(true);
+    })();
+  }, []);
 
   const toggleMode = () => {
-    setMode((prev) => (prev === "light" ? "dark" : "light"));
+    setMode((prev) => {
+      const next = prev === "light" ? "dark" : "light";
+      AsyncStorage.setItem('nx_theme_mode', next).catch(()=>{});
+      return next;
+    });
   };
 
   const value = useMemo(() => {
@@ -57,6 +70,7 @@ export function ThemeProvider({ children }) {
     };
   }, [mode]);
 
+  if(!ready) return null;
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 

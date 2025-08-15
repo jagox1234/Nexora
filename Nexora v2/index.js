@@ -1,0 +1,26 @@
+// Nexora v2 public barrel exports
+export * from './app/AppProvider.js';
+export * from './core/index.js';
+export * from './core/services.js';
+export * from './core/clients.js';
+export * from './core/bookings.js';
+export * from './core/persistence.js';
+export * from './core/i18n.js';
+export * from './core/helpers.js';
+export * from './core/utils.js';
+export * from './core/miscUtils.js';
+export * from './core/auth.js';
+export * from './core/businesses.js';
+export * from './core/staff.js';
+export * from './core/availability.js';
+export * from './core/requests.js';
+export * from './ui/components.js';
+export * from './ui/theme.js';
+export * from './ui/modal.js';
+export * from './ui/toast.js';
+export * from './ui/icons.js';
+export { UIHeader } from './ui/components.js';
+export * from './screens/index.js';
+export * from './app/navigation/AppNavigation.js';
+export * from './app/navigation/BusinessTabs.js';
+export * from './app/navigation/ClientTabs.js';

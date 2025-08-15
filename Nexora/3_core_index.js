@@ -1,14 +1,13 @@
 // Nexora/3_core_index.js — core store (offline) + business & client flows (hooks fixed)
-import {
-  React,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from "./2_dependencies";
+import { createBookingFn, confirmBookingFn, cancelBookingFn, getBookingsByDateFn, isOverlappingFn } from "@core/bookings.js";
+import { upsertClientFn, removeClientFn, getClientFn } from "@core/clients.js";
+import { initLocale } from "@core/i18n.js";
+import { SCHEMA_VERSION, SCHEMA_VERSION_KEY, runMigrations } from "@core/persistence.js";
+import { addServiceFn, removeServiceFn } from "@core/services.js";
+
+import { React, createContext, useContext, useEffect, useMemo, useState, useCallback } from "./2_dependencies";
 import { AsyncStorage } from "./2_dependencies.js";
+
 
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
@@ -64,6 +63,9 @@ export function AppProvider({ children }) {
     { id: "bkg_1", serviceId: "srv_1", clientId: "cli_1", startsAt: nowPlus(60), status: "confirmed", source: "app" },
   ]);
 
+  // legacy addClient kept only so old code calling it doesn't crash; prefer upsertClient
+  const addClient = useCallback(() => { /* deprecated noop */ }, []);
+
   // ----- client-side requests (modo cliente) -----
   const [clientRequests, setClientRequests] = useState([]); // { id, businessId, businessName, serviceName, clientName, clientPhone, whenISO|null, status:"queued"|"requested" }
 
@@ -72,21 +74,34 @@ export function AppProvider({ children }) {
   // load
   useEffect(() => {
     (async () => {
-      const [r, c, s, cl, b, cr] = await Promise.all([
+      await initLocale();
+      const [r, c, s, cl, b, cr, storedVersionRaw] = await Promise.all([
         AsyncStorage.getItem(ROLE_KEY),
         loadJSON("nx_clinic", defaultClinic),
         loadJSON("nx_services", null),
         loadJSON("nx_clients", null),
         loadJSON("nx_bookings", null),
         loadJSON("nx_client_requests", []),
+        AsyncStorage.getItem(SCHEMA_VERSION_KEY)
       ]);
+      let data = { services: s || [], clients: cl || [], bookings: b || [] };
+      const storedVersion = storedVersionRaw ? parseInt(storedVersionRaw, 10) : 0;
+      const { migrated, version, data: migratedData } = await runMigrations(SCHEMA_VERSION, storedVersion, data);
+      if (migrated) {
+        try { await AsyncStorage.setItem(SCHEMA_VERSION_KEY, String(version)); } catch {}
+        // persist transformed collections
+        try { await AsyncStorage.setItem('nx_bookings', JSON.stringify(migratedData.bookings)); } catch {}
+      }
       if (r === "business" || r === "client") setRole(r);
       if (c) setClinic(c);
-      if (s) setServices(s);
-      if (cl) setClients(cl);
-      if (b) setBookings(b);
+      if (s) setServices(migratedData.services || s || []);
+      if (cl) setClients(migratedData.clients || cl || []);
+      if (b) setBookings(migratedData.bookings || b || []);
       if (cr) setClientRequests(cr);
       setReady(true);
+      if (!storedVersionRaw) {
+        try { await AsyncStorage.setItem(SCHEMA_VERSION_KEY, String(SCHEMA_VERSION)); } catch {}
+      }
     })();
   }, []);
 
@@ -176,87 +191,49 @@ export function AppProvider({ children }) {
   );
 
   // overlap check
-  const isOverlapping = useCallback(
-    (whenISO, serviceId, excludeId = null) => {
-      const srv = services.find((s) => s.id === serviceId);
-      if (!srv) return false;
-      const start = new Date(whenISO).getTime();
-      const end = start + srv.durationMin * 60 * 1000;
-      return bookings.some((b) => {
-        if (excludeId && b.id === excludeId) return false;
-        if (b.serviceId !== serviceId || b.status === "cancelled") return false;
-        const s = new Date(b.startsAt).getTime();
-        const e = s + (services.find((x) => x.id === b.serviceId)?.durationMin || 0) * 60 * 1000;
-        return Math.max(s, start) < Math.min(e, end);
-      });
-    },
-    [services, bookings]
-  );
+  const isOverlapping = useCallback((whenISO, serviceId, excludeId = null) => (
+    isOverlappingFn({ bookings, services, whenISO, serviceId, excludeId })
+  ), [bookings, services]);
 
   // clients (business)
-  const addClient = useCallback(
-    ({ name, phone }) => {
-      const exists = clients.find((c) => c.phone === phone);
-      if (exists) return exists;
-      const id = `cli_${Date.now()}`;
-      const row = { id, name: name || "Client", phone: phone || "" };
-      setClients((c) => [row, ...c]);
-      return row;
-    },
-    [clients]
-  );
-
-  const upsertClient = useCallback(({ name, phone }) => addClient({ name, phone }), [addClient]);
+  const upsertClient = useCallback(({ name, phone }) => {
+    const res = upsertClientFn(clients, { name, phone });
+    if (res.created) setClients(res.clients);
+    return res.client;
+  }, [clients]);
 
   const removeClient = useCallback((id) => {
-    setClients((c) => c.filter((x) => x.id !== id));
+    setClients((c) => removeClientFn(c, id));
   }, []);
 
   // services (business)
   const addService = useCallback((payload) => {
-    const id = `srv_${Date.now()}`;
-    setServices((s) => [{ id, ...payload }, ...s]);
+    setServices((s) => addServiceFn(s, payload).services);
   }, []);
 
   const removeService = useCallback((id) => {
-    setServices((s) => s.filter((x) => x.id !== id));
+    setServices((s) => removeServiceFn(s, id));
   }, []);
 
   // bookings (business)
-  const createBooking = useCallback(
-    ({ serviceId, clientName, clientPhone, whenISO }) => {
-      if (!serviceId || !clientPhone || !whenISO) return { ok: false, error: "Missing fields" };
-      if (isOverlapping(whenISO, serviceId)) return { ok: false, error: "Overlapping booking" };
-      const client = upsertClient({ name: clientName, phone: clientPhone });
-      const id = `bkg_${Date.now()}`;
-      const row = { id, serviceId, clientId: client.id, startsAt: whenISO, status: "pending", source: "app" };
-      setBookings((b) => [row, ...b]);
-      return { ok: true, id };
-    },
-    [isOverlapping, upsertClient]
-  );
+  const createBooking = useCallback(({ serviceId, clientName, clientPhone, whenISO }) => {
+    const client = upsertClient({ name: clientName, phone: clientPhone });
+    const res = createBookingFn({ bookings, services, serviceId, clientId: client.id, whenISO });
+    if (res.ok) setBookings((b) => [{ ...res.booking, createdAt: new Date().toISOString() }, ...b]);
+    return res.ok ? { ok: true, id: res.booking.id } : res;
+  }, [bookings, services, upsertClient]);
 
   const confirmBooking = useCallback((id) => {
-    setBookings((b) => b.map((x) => (x.id === id ? { ...x, status: "confirmed" } : x)));
+    setBookings((b) => confirmBookingFn(b, id));
   }, []);
 
   const cancelBooking = useCallback((id) => {
-    setBookings((b) => b.map((x) => (x.id === id ? { ...x, status: "cancelled" } : x)));
+    setBookings((b) => cancelBookingFn(b, id));
   }, []);
 
   // queries (business)
-  const getBookingsByDate = useCallback(
-    (date) => {
-      const d = new Date(date);
-      const tag = d.toDateString();
-      return bookings
-        .filter((b) => new Date(b.startsAt).toDateString() === tag)
-        .sort((a, b) => new Date(a.startsAt) - new Date(b.startsAt));
-    },
-    [bookings]
-  );
-
-  const getClient = useCallback((id) => clients.find((c) => c.id === id) || null, [clients]);
+  const getBookingsByDate = useCallback((date) => getBookingsByDateFn(bookings, date), [bookings]);
+  const getClient = useCallback((id) => getClientFn(clients, id), [clients]);
   const getService = useCallback((id) => services.find((s) => s.id === id) || null, [services]);
 
   // ----- client flow (offline mock) -----
@@ -329,19 +306,19 @@ export function AppProvider({ children }) {
       removeService,
       clients,
       setClients,
-      addClient,
+  addClient,
       upsertClient,
       removeClient,
       bookings,
       setBookings,
-      createBooking,
-      confirmBooking,
-      cancelBooking,
-      generateSlots,
-      isOverlapping,
-      getBookingsByDate,
-      getClient,
-      getService,
+  createBooking,
+  confirmBooking,
+  cancelBooking,
+  generateSlots,
+  isOverlapping,
+  getBookingsByDate,
+  getClient,
+  getService,
       // client-side mock
       businesses,
       clientRequests,
@@ -365,7 +342,7 @@ export function AppProvider({ children }) {
       setBookings,
       addService,
       removeService,
-      addClient,
+  addClient,
       upsertClient,
       removeClient,
       createBooking,

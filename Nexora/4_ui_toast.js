@@ -1,5 +1,5 @@
 // Nexora/4_ui_toast.js — simple toast system (success/info/error) with safe theme usage
-import { React, useState, useEffect, createContext, useContext, View, Text, Animated } from "./2_dependencies.js";
+import { React, useState, createContext, useContext, View, Text, Animated } from "./2_dependencies.js";
 import { useTheme } from "./4_ui_theme.js";
 
 const ToastCtx = createContext(null);

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import * as Font from "expo-font";
 import { Asset } from "expo-asset";
+import * as Font from "expo-font";
+import { useCallback, useEffect, useState } from "react";
 
 export function useLoadResources() {
   const [ready, setReady] = useState(false);
