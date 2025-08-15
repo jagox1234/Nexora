@@ -1,32 +1,49 @@
 {
-  "license": "0BSD",
-  "main": "index.js",
+  "name": "nexora",
+  "version": "1.0.0",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "start:tunnel": "expo start --tunnel",
+    "clean": "npx rimraf node_modules package-lock.json .expo .expo-shared && npx rimraf android/build ios/build webapp/node_modules webapp/package-lock.json",
+    "reset": "npm run clean && npm install && expo start -c"
   },
   "dependencies": {
-    "expo": "~53.0.20",
-    "expo-status-bar": "~2.2.3",
-    "react": "19.0.0",
-    "react-native": "0.79.5",
-    "dayjs": "^1.11.13",
-    "react-native-svg": "15.11.2",
-    "@expo/vector-icons": "^14.1.0",
+    "expo": "^53.0.0",
+    "@expo/metro-runtime": "~5.0.4",
+    "expo-asset": "~11.1.7",
+    "expo-font": "~13.3.2",
     "expo-linear-gradient": "~14.1.5",
+    "@expo/vector-icons": "^14.1.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "0.79.5",
+    "react-native-web": "0.20.0",
     "react-native-screens": "~4.11.1",
     "react-native-reanimated": "~3.17.4",
-    "@react-navigation/native": "6.1.17",
     "react-native-gesture-handler": "~2.24.0",
+    "react-native-safe-area-context": "5.4.0",
+    "@react-navigation/native": "6.1.17",
     "@react-navigation/bottom-tabs": "6.5.20",
     "@react-navigation/native-stack": "6.9.26",
-    "react-native-safe-area-context": "5.4.0",
-    "@react-native-async-storage/async-storage": "2.1.2"
+    "@react-native-async-storage/async-storage": "2.1.2",
+    "dayjs": "^1.11.13"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.24.0",
+    "rimraf": "^5.0.5",
+    "typescript": "~5.8.3",
+    "@types/react": "~19.0.10"
   },
-  "private": true
+  "expo": {
+    "install": {
+      "exclude": [
+        "@types/react-native"
+      ]
+    }
+  }
 }
